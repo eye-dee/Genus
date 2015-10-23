@@ -34,14 +34,21 @@ void pole()
 
 	if (flag == 1)
 	{
-		glColor3d(0.2,0.2,0.2);
+		glColor3d(1.0,0.0,0.0);
 		glBegin(GL_POINTS);
-			for (double t = 0.0; t < 640.0; t += 0.1)
+			for (double t = 0.0; t < 640.0; t += 0.01)
 				glVertex2d(t,cS->f(t));
 		glEnd();
 		glColor3d(0.5,0.5,0.5);
 		//cS->fastDraw();
 	}
+
+	glColor3d(0.0,0.0,0.0);
+	glBegin(GL_LINE_STRIP);
+		for (int i = 0; i < N; ++i)
+			glVertex2d(X[i],Y[i]);
+	glEnd();
+
 	
 	glutSwapBuffers();
 
