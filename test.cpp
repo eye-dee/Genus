@@ -13,8 +13,8 @@ double* Y = new double[640];
 int N = 0;
 int flag = -1;
 
-typedef std :: shared_ptr<LagranzhRoadMaker> LagranzhRoadMakerPointer;
-LagranzhRoadMakerPointer cS;
+typedef std :: shared_ptr<CubicSplineRoadMaker> CubicSplineRoadMakerPointer;
+CubicSplineRoadMakerPointer cS;
 
 void Init(void)
 {
@@ -84,7 +84,7 @@ void control(int button, int state,
 			else
 			{
 				flag = 1;
-				cS = LagranzhRoadMakerPointer(new LagranzhRoadMaker(X,Y,N));
+				cS = CubicSplineRoadMakerPointer(new CubicSplineRoadMaker(X,Y,N));
 				cS->makeSpline();
 			}
 		}
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(640,480);
 	glutInitWindowPosition(100,200);
-	glutCreateWindow("LagranzhRoadMaker");
+	glutCreateWindow("CubicSplineRoadMaker");
 	Init();
 	glutDisplayFunc(pole);
 	glutMotionFunc(make);

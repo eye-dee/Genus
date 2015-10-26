@@ -1,5 +1,30 @@
 #include "RoadMaker.h"
 
+RoadMaker :: RoadMaker(const double xStart,const double yStart) : _x(1u,xStart),
+	_f(1u,yStart),
+	_k(1u,Polynom(yStart,0.0)),
+	_N(1),
+	spline(true)
+	//так как этот конструктор создан для он-лайн рисования, то скорее всего для оптимизации будет правильнее сразу выделять некоторую память под вектора
+{}
+
+RoadMaker :: RoadMaker(const double x[2],const double y[2],std :: size_t degree) : _x(x,x+2),
+	_f(y,y+2),
+	_k(2u,Polynom(degree)),
+	_N(2),
+	spline(true)
+{
+	_k[0][0] = y[0];
+	_k[0][1] = 0.0;
+	_k[0][2] = 0.0;
+	_k[0][3] = 0.0;
+	_k[1][0] = y[0];
+	_k[1][1] = 0.0;
+	_k[1][2] = 0.0;
+	_k[1][3] = 0.0;
+
+}
+
 
 RoadMaker :: RoadMaker(const double *x, const double *y, std :: size_t n,std :: size_t degree) : _x(x,x+n),
 	_f(y,y+n),
@@ -17,7 +42,7 @@ RoadMaker :: RoadMaker(const double *x, const double *y, std :: size_t n,std :: 
 {}
 
 
-double RoadMaker :: f(double x)
+double RoadMaker :: f(double x) const
 {
 	if(spline)
 	{

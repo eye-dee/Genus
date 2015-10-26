@@ -14,9 +14,12 @@ public:
 	{};
 
 	virtual void makeSpline() = 0;
+	virtual void pushNewPoint(const double x,const double y) = 0;
 
-	virtual double f(double x);
+	virtual double f(double x) const;
 
+	RoadMaker(const double xStart,const double yStart);
+	RoadMaker(const double x[2],const double y[2],std :: size_t degree);
 	RoadMaker(const double *x, const double *y, std :: size_t n,std :: size_t degree);
 	RoadMaker(const double *x, const double *y, std :: size_t n,std :: size_t koefSize, std :: size_t degree);
 protected:

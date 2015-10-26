@@ -10,12 +10,13 @@
 class CanonicalRoadMaker : public RoadMaker
 {
 public:
-
+	CanonicalRoadMaker(const double xStart,const double yStart);
 	CanonicalRoadMaker(const double *x, const double *y, std :: size_t n);
 
+	void pushNewPoint(const double x,const double y);
 	void makeSpline();
 
-	double f(double x);
+	double f(double x) const;
 
 	void fastDraw();
 };

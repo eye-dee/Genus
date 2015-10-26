@@ -3,9 +3,7 @@
 
 LagranzhRoadMaker :: LagranzhRoadMaker(const double *x, const double *y, std :: size_t n) :
 	RoadMaker(x,y,n,n/(LAGRANZH_DEGREE - 1u) + 1u,LAGRANZH_DEGREE),
-//	RoadMaker(x,y,n,1u,LAGRANZH_DEGREE),
 	partsAmount(n/(LAGRANZH_DEGREE - 1u) + 1u)
-//	partsAmount(1u)
 {
 }
 
@@ -15,11 +13,9 @@ void LagranzhRoadMaker :: makeSpline()
 	for (std :: size_t i = 0; i < _k.size(); ++i)
 	{
 		for (std :: size_t j = 8u*i; (j < 8u*i + 11u) && (j < _N); ++j)
-		//for (std :: size_t j = 0u; j < _N; ++j)
 		{
 			temp = Polynom(_f[j]);
 			for (std :: size_t p = 8u*i; (p < 8u*i + 11u) && (p < _N); ++p)
-		//	for (std :: size_t p = 0u; p < _N; ++p)
 			{
 				if (j == p)
 					continue;
@@ -33,9 +29,9 @@ void LagranzhRoadMaker :: makeSpline()
 
 	spline = true;
 }
-double LagranzhRoadMaker :: f(double x)
+
+double LagranzhRoadMaker :: f(double x) const
 {
-	//x -= 0.5;
 	if (spline)
 	{
 		Polynom temp(_k[0]);
@@ -57,10 +53,14 @@ double LagranzhRoadMaker :: f(double x)
 			}
 			temp = _k[j/(LAGRANZH_DEGREE-1u)];
 		}
-		//x += 0.5;
 		return temp.f(x);
 	} else
 	{
 		throw UseWithoutSpline();
 	}
+}
+
+void LagranzhRoadMaker :: pushNewPoint(const double x,const double y)
+{
+	
 }

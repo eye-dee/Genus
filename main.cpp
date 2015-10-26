@@ -1,6 +1,6 @@
-#include "CanonicalRoadMaker.h"
-#include "CubicSplineRoadMaker.h"
 #include "LagranzhRoadMaker.h"
+#include "CubicSplineRoadMaker.h"
+#include "CanonicalRoadMaker.h"
 
 #include <windows.h>
 #include <time.h>
@@ -13,8 +13,8 @@ double* Y = new double[640];
 int N = 0;
 int flag = -1;
 
-typedef std :: shared_ptr<LagranzhRoadMaker> LagranzhRoadMakerPointer;
-LagranzhRoadMakerPointer cS;
+typedef std :: shared_ptr<CubicSplineRoadMaker> CubicSplineRoadMakerPointer;
+CubicSplineRoadMakerPointer cS(CubicSplineRoadMakerPointer(new CubicSplineRoadMaker(xStart,yStart)));
 
 void Init(void)
 {
@@ -32,8 +32,6 @@ void pole()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	if (flag == 1)
-	{
 		glColor3d(0.2,0.2,0.2);
 		glBegin(GL_POINTS);
 			for (double t = 0.0; t < 640.0; t += 0.1)
@@ -41,7 +39,6 @@ void pole()
 		glEnd();
 		glColor3d(0.5,0.5,0.5);
 		//cS->fastDraw();
-	}
 	
 	glutSwapBuffers();
 
@@ -61,6 +58,7 @@ void make(int x,int y)
 		{
 			X[N] = x;
 			Y[N++] = y;
+			cS->pushNewPoint(x,y);
 		}
 	}
 }
@@ -77,8 +75,8 @@ void control(int button, int state,
 			else
 			{
 				flag = 1;
-				cS = LagranzhRoadMakerPointer(new LagranzhRoadMaker(X,Y,N));
-				cS->makeSpline();
+				/*cS = CanonicalRoadMakerPointer(new CanonicalRoadMaker(X,Y,N));
+				cS->makeSpline();*/
 			}
 		}
 	}
@@ -91,7 +89,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(640,480);
 	glutInitWindowPosition(100,200);
-	glutCreateWindow("LagranzhRoadMaker");
+	glutCreateWindow("CanonicalRoadMaker");
 	Init();
 	glutDisplayFunc(pole);
 	glutMotionFunc(make);

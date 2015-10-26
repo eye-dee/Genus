@@ -1,5 +1,8 @@
 #include "CubicSplineRoadMaker.h"
 
+CubicSplineRoadMaker ::	CubicSplineRoadMaker(const double x[2], const double y[2]) : RoadMaker(x,y,DEGREE_CUBIC)
+{}
+
 CubicSplineRoadMaker :: CubicSplineRoadMaker(const double *x, const double *y, std :: size_t n) : 
 	RoadMaker(x,y,n,DEGREE_CUBIC)
 {
@@ -13,7 +16,7 @@ void CubicSplineRoadMaker :: makeSpline()
 	double *beta = new double[_N - 1];
 	double A, B, C, F, h_i, h_i1, z;
 	alpha[0] = beta[0] = 0.0;
-	for (std::size_t i = 1; i < _N - 1; ++i)
+	for (std :: size_t i = 1; i < _N - 1; ++i)
 	{
 		h_i = _x[i] - _x[i - 1], 
 			h_i1 = _x[i + 1] - _x[i];
@@ -45,7 +48,7 @@ void CubicSplineRoadMaker :: makeSpline()
 
 	spline = true;
 }
-double CubicSplineRoadMaker :: f(double x)
+double CubicSplineRoadMaker :: f(double x) const
 {
 	if (spline)
 	{
@@ -74,4 +77,34 @@ double CubicSplineRoadMaker :: f(double x)
 	{
 		throw UseWithoutSpline();
 	}
+}
+
+void CubicSplineRoadMaker :: pushNewPoint(const double x,const double y)
+{
+	_x.push_back(x);
+	_f.push_back(y);
+
+	double hi = _x[_N-1] - _x[_N-2], hi1 = _x[_N] - _x[_N-1];
+
+	double * mas1 = new double[4];
+
+	mas1[0] = _f[_N];
+	mas1[1] = 0.0;
+	mas1[2] = 0.0;
+	mas1[3] = 0.0;
+	
+	double * mas2 = new double[4];
+	mas2[0] = _f[_N-1];
+	mas2[1] = (_f[_N-1] - _f[_N-2])/hi + (hi*(2*_k[_N-1][2] + _k[_N-2][2]))/6.0;
+	mas2[2] = (((_f[_N] - _f[_N-1])/hi1 - (_f[_N-1] - _f[_N-2])/hi) - (hi*_k[_N-2][2] + 2*(hi + hi1)*_k[_N-1][2]))/hi1;
+	mas2[3] = _k[_N-1][2] - _k[_N-2][2];
+
+	mas1[1] = (_f[_N] - _f[_N-1])/hi1 + (hi1*mas2[2])/6.0;
+	mas1[3] = -mas2[2]/hi1;
+
+	_k.push_back(Polynom(mas1,4));
+	_k[_N-1] = Polynom(mas2,4);
+
+	++_N;
+
 }
