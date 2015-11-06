@@ -4,4 +4,4 @@
 
 #define P 3.1415926535
 
-#define G 3
+#define G 3.0

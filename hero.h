@@ -3,13 +3,15 @@
 #include "defs.h"
 #include <GL\GLAux.h>
 #include <fstream>
-//MyColor colorOfWheel(0.0,0.0,0.0);
+#include<iostream>
+
+const MyColor colorOfWheel = MyColor(0.0,0.0,0.0);
 
 struct wheel
 {
-	wheel():weight(5){};
+	wheel():weight(10){};
 	int x,y,r;
-	double horizontalSpeed, horizontalAcceleration, verticalSpeed, verticalAcceleration, weight;
+	double acceleration, horizontalSpeed, horizontalAcceleration, verticalSpeed, verticalAcceleration, weight;
 };
 
 struct power
@@ -28,6 +30,7 @@ class hero
 	double powerOfMotor, obstruct, speedLimit, backSpeedLimit, verticalReaction, gravityConst, agility,
 		levelOfEarth, alphaOfEarth, densityOfEarth;
 
+	int i;
 	
 	hero(void):
 		speedLimit(10), 
@@ -40,7 +43,8 @@ class hero
 		levelOfEarth(300),
 		alphaOfEarth(0),
 		densityOfEarth(2),
-		agility(10)
+		agility(10),
+		i(0)
 	{
 		rightWheel.y=leftWheel.y=300;
 		rightWheel.r=leftWheel.r=20;
@@ -65,27 +69,27 @@ class hero
 		
 		glColor3f(0,0,0);
 		glBegin(GL_POINTS);
-		/*for(double i=0; i<2*P; i+=0.01)
+		for(double i=0; i<2*P; i+=0.01)
 		{
 			glVertex2d(leftWheel.x+leftWheel.r*cos(i), leftWheel.y+leftWheel.r*sin(i));
-		}*/
+		}
 		for(double i=0; i<2*P; i+=0.01)
 		{
 			glVertex2d(rightWheel.x+leftWheel.r*cos(i), rightWheel.y+leftWheel.r*sin(i));
 		}
 		glEnd();
-/*
+
 		glBegin(GL_LINES);
 			glVertex2d(leftWheel.x, leftWheel.y);
 			glVertex2d(rightWheel.x, rightWheel.y);
-		glEnd();*/
+		glEnd();
 
 		
 		glBegin(GL_LINES);
 		for(int i=0; i<10; i++)
 		{
-			/*glVertex2d(leftWheel.x, leftWheel.y);
-			glVertex2d(leftWheel.x+leftWheel.r*cos(stick[i]), leftWheel.y+leftWheel.r*sin(stick[i]));*/
+			glVertex2d(leftWheel.x, leftWheel.y);
+			glVertex2d(leftWheel.x+leftWheel.r*cos(stick[i]), leftWheel.y+leftWheel.r*sin(stick[i]));
 			glVertex2d(rightWheel.x, rightWheel.y);
 			glVertex2d(rightWheel.x+rightWheel.r*cos(stick[i]), rightWheel.y+rightWheel.r*sin(stick[i]));
 		}
@@ -96,35 +100,46 @@ class hero
 	{
 		
 	if((leftWheel.y-leftWheel.r)<=getCurrentY(leftWheel.x))
-			reaction.mean=gravity.mean;
+			reaction.mean=gravity.mean*sin(-getCurrentAlpha(rightWheel.x));//правка
 		else
 			reaction.mean=0;
-		if(leftWheel.horizontalSpeed>0)
+	/*if(leftWheel.horizontalSpeed>0)
 		{
 			friction.alpha=	acceleration.alpha+P;
-			resistance.alpha=	acceleration.alpha+P;
+			resistance.alpha= acceleration.alpha+P;
 		}
 		else
 		{
 			friction.alpha=	getCurrentAlpha(rightWheel.x);
 			resistance.alpha= getCurrentAlpha(rightWheel.x);
-		}
+		}*/
 		reaction.alpha=getCurrentAlpha(rightWheel.x)+0.5*P;
-		resistance.mean=densityOfEarth*leftWheel.horizontalSpeed*leftWheel.horizontalSpeed/10;
+		resistance.mean=densityOfEarth*leftWheel.horizontalSpeed*fabs(leftWheel.horizontalSpeed)/10;
 
 		if(leftWheel.horizontalSpeed!=0)
 			friction.mean=obstruct*reaction.mean;
 		else friction.mean=0;
-		leftWheel.horizontalAcceleration=	
+
+		/*leftWheel.horizontalAcceleration=	
 			(acceleration.mean*cos(acceleration.alpha)
 			+	friction.mean*cos(friction.alpha)
 			+	resistance.mean*cos(resistance.alpha)
-			+	gravity.mean*cos(getCurrentAlpha(rightWheel.x)+P*0.5))/leftWheel.weight;
+			+	gravity.mean*sin(getCurrentAlpha(rightWheel.x)
+			//gravity.mean*cos(getCurrentAlpha(rightWheel.x)+P*0.5)
+				)/leftWheel.weight;*/
+		leftWheel.acceleration = (	acceleration.mean
+			-	friction.mean
+			-	resistance.mean
+			-	gravity.mean*sin(getCurrentAlpha(rightWheel.x))
+				)/leftWheel.weight;
+		leftWheel.horizontalAcceleration = leftWheel.acceleration*cos(getCurrentAlpha(rightWheel.x));
+
 		leftWheel.horizontalSpeed+=leftWheel.horizontalAcceleration;
 
+		//std :: cout << leftWheel.horizontalSpeed;
 		//обрабатываем изменение горизонтальной координаты
-		if(fabs(leftWheel.horizontalSpeed)<0.1)
-			leftWheel.horizontalSpeed=0;
+	/*	if(fabs(leftWheel.horizontalSpeed)<0.2)
+			leftWheel.horizontalSpeed=0;*/
 
 		if(notAnyDike)
 			rightWheel.horizontalSpeed=leftWheel.horizontalSpeed;
@@ -138,26 +153,43 @@ class hero
 			reaction.mean=0;
 		reaction.alpha=getCurrentAlpha(rightWheel.x)+0.5*P;
 
-		rightWheel.verticalAcceleration=
-			(gravity.mean*sin(gravity.alpha)
-			+	reaction.mean*sin(reaction.alpha)
-			+	rotate.mean*sin(rotate.alpha))/rightWheel.weight;
+		rightWheel.verticalAcceleration = leftWheel.acceleration*sin(getCurrentAlpha(rightWheel.x));
 		rightWheel.verticalSpeed+=rightWheel.verticalAcceleration;
+
 		///вертикальной координаты
-		if((fabs(rightWheel.verticalSpeed)<0.1)||((rightWheel.y-rightWheel.r)<=getCurrentY(rightWheel.x)))
+		/*if((fabs(rightWheel.verticalSpeed)<0.01)||((rightWheel.y-rightWheel.r)<=getCurrentY(rightWheel.x)))
 		{
 			rightWheel.verticalSpeed=0;
-		}
+		}*/
 		
 		
 		if((rightWheel.y-rightWheel.r)<getCurrentY(rightWheel.x))
 			rightWheel.y=getCurrentY(rightWheel.x)+rightWheel.r;
-		rightWheel.y+=rightWheel.verticalSpeed;
+
+		double minY =  (rightWheel.r/getCurrentAlpha(rightWheel.x) - rightWheel.r) + getCurrentY(rightWheel.x);
+		if((rightWheel.y+rightWheel.verticalSpeed) > minY)
+		{
+			rightWheel.verticalSpeed = 0;
+			rightWheel.y = rightWheel.r + minY;
+		}
 
 
 		//спицы
 		for(int i=0; i < 10; i++)
 			stick[i]-=leftWheel.horizontalSpeed/leftWheel.r;
+
+		++i;
+		if (i%5 == 0)
+		{
+			std :: cout << leftWheel.horizontalAcceleration
+				<< ' ' 
+				<< leftWheel.horizontalSpeed 
+				<< ' ' 
+				<< rightWheel.verticalAcceleration 
+				<< ' ' 
+				<< rightWheel.verticalSpeed 
+				<< '\n';
+		}
 	}
 
 	void accelerate()
@@ -203,5 +235,22 @@ class hero
 			return 300 +0.2*(x-300)-leftWheel.r;
 		if((x>600)&(x<=gameWidth))
 			return 360-0.2*(x-600)-leftWheel.r;
+	}
+	void reboot()
+	{
+		rightWheel.y=leftWheel.y=300;
+		rightWheel.r=leftWheel.r=20;
+		rightWheel.x=300;
+		leftWheel.x=200;
+		leftWheel.y=300;
+		head.x=300;
+		head.y=400;
+		lengthOfBike=rightWheel.x-leftWheel.x;
+		double tmp=2*P/10;
+		for(int i=0; i<10; i++)
+			stick[i]=tmp*i;
+		gravity.mean=leftWheel.weight*G;
+		gravity.alpha=1.5*P;
+		//right
 	}
 };

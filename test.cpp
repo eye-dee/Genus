@@ -40,6 +40,7 @@ void keyPress()
 	if(!((KeyDown['a']==1)||(KeyDown['d']==1)))
 		myFirstHero.restVertical();
 	myFirstHero.recompute();
+	if(KeyDown['r']==1) myFirstHero.reboot(); 
 }
 
 
