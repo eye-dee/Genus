@@ -17,7 +17,6 @@ public:
 	MyColor getPart(double l,MyColor&& c);
 };
 
-void glColor(MyColor&);
+void glColor(const MyColor&);
 
-void glColor(MyColor&&);
-
+void glColor(const MyColor&&);
