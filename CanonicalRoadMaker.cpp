@@ -30,6 +30,16 @@ void CanonicalRoadMaker :: makeSpline()
 	}*/
 }
 
+double CanonicalRoadMaker :: getAlpha(double x,double bottom,int st) const
+{
+	return RoadMaker :: getAlpha(x,bottom,st);
+}
+
+double CanonicalRoadMaker :: getAlphaOld(double x) const
+{
+	return RoadMaker :: getAlphaOld(x);
+}
+
 double CanonicalRoadMaker :: f(double x) const
 {
 	return RoadMaker :: f(x);
@@ -63,9 +73,4 @@ void CanonicalRoadMaker :: pushNewPoint(const double x,const double y)
 		(_x[_N - 1u]*_f[_N - 2u] - _x[_N - 2u]*_f[_N - 1u])/temp,
 		(_f[_N - 1u] - _f[_N - 2u])/temp)
 				);
-}
-
-double CanonicalRoadMaker :: getAlpha(double x, double bottom, int st) const
-{
-	return RoadMaker :: getAlpha(x,bottom,st);
 }

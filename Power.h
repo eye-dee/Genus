@@ -6,6 +6,7 @@ class Power
 {
 public:
 	Power();
+	Power(double p, double al);
 
 	inline double getX() const
 	{
@@ -24,6 +25,12 @@ public:
 		projectionX = v*cos(alpha);
 		projectionY = v*sin(alpha);
 		value = v;
+	}
+	inline Power& operator =(double p)
+	{
+		value = p;
+		projectionX = p;
+		return *this;
 	}
 private:
 	double projectionX;

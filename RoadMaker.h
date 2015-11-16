@@ -20,6 +20,7 @@ public:
 	virtual double f(double x) const;
 
 	virtual double getAlpha(double x,double bottom, int st = 1) const;
+	virtual double getAlphaOld(double x) const;
 
 	RoadMaker(const double xStart,const double yStart);
 	RoadMaker(const double x[2],const double y[2],std :: size_t degree);

@@ -6,6 +6,8 @@
 #include"RoadMaker.h"
 #include"Power.h"
 
+#include"const.h"
+
 class Wheel
 {
 public:
@@ -31,43 +33,66 @@ public:
 
 	inline void accelerate()
 	{
-		force.set(WHEEL_FORCE,back->getAlpha(x,y-r));
+		isForce = true;
+		force.set(WHEEL_FORCE,getAlpha());
 	}
 
 	inline void unAccelerate()
 	{
+		isForce = false;
 		force.set(0.0,0.0);
 	}
 	inline void bendBack()
 	{
 	}
 
-	inline double getAlpha() const
+	inline void setFly()
+	{
+		double min = back->f(x);
+		if ( y > min + 2.0)
+			isFly = true;
+		else
+			isFly = false;
+	}
+
+	/*inline double getAlpha() const
 	{
 		return alpha;
-	}
-	inline void setAlpha(double al)
+	}*/
+
+	/*inline void setAlpha(double al)
 	{
 		alpha = al;
-	}
+	}*/
 
 	void calculate();
 private:
 	double x;
 	double y;
 	const double r;
-	double acceleration;
-	double speed;
+	double acceleration, accelerationX, accelerationY;
+	double speed, speedX, speedY;
 	const double weight;
 	
-	double alpha;
+	bool isFly;
 	
 	MyColor mC;
 
 	RoadMakerPointer back;
 
 	Power force;
+	bool isForce;
 	Power sum;
 
 	double stick[NUMBER_OF_STICK];
+
+	inline double getAlpha() const
+	{
+		if (speedX < MIN_SPEED)
+			if (speedY > 0)
+				return PI/2.0;
+			else
+				return -PI/2.0;
+		return atan(speedY/speedX);
+	}
 };

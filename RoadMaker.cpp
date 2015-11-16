@@ -85,3 +85,12 @@ double RoadMaker :: getAlpha(double x, double bottom,int st) const
 
 	return atan((border - f(stepX))/(x - stepX));
 }
+
+double RoadMaker :: getAlphaOld(double x) const
+{
+	double border = f(x);
+
+	double stepX = x + EPSILON;
+
+	return atan((border - f(stepX))/(x - stepX));
+}

@@ -17,8 +17,10 @@ public:
 	void makeSpline();
 
 	double f(double x) const;
-	double getAlpha(double x, double bottom, int st = 1) const;
 
 	void fastDraw();
+
+	double getAlpha(double x,double bottom, int st = 1) const;
+	double getAlphaOld(double x) const;
 };
 
