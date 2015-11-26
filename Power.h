@@ -32,6 +32,12 @@ public:
 		projectionX = p;
 		return *this;
 	}
+	inline void null()
+	{
+		value = 0.0;
+		projectionX = 0.0;
+		projectionY = 0.0;
+	}
 private:
 	double projectionX;
 	double projectionY;

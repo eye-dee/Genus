@@ -125,11 +125,13 @@ void pole()
 	if (flag == 1)
 	{
 		keyPress();
+		if (!KeyDown['w'])
+			w->unAccelerate();
 		glClear(GL_COLOR_BUFFER_BIT);
 
 			glColor3d(0.2,0.2,0.2);
 			glBegin(GL_LINE_STRIP);
-				for (double t = 0.0; t < 1024.0; t += 0.1)
+				for (double t = 0.0; t < 1024.0; t += 1.0)
 					glVertex2d(t,cS->f(t));
 			glEnd();
 			glColor3d(0.5,0.5,0.5);
@@ -138,7 +140,7 @@ void pole()
 	}
 
 	glutSwapBuffers();
-	//Sleep(500);
+	Sleep(50);
 };
 
 void make(int x,int y)
